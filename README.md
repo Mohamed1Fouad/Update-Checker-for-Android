@@ -10,6 +10,10 @@ The project aims to provide check new update available of your application on th
 - Specify number of days that library will not take effect when user choose "remind me"
 - Callback to implement your own custom logic.
 
+## Screenshots
+![Screenshot](https://github.com/Mohamed1Fouad/Update-Checker-for-Android/blob/master/device-2016-03-13-230253.png)
+
+
 ## Quick Setup
 
 #### Automatically ([ ![Download](https://api.bintray.com/packages/mohamed1fouad/maven/Update-Checker-for-android/images/download.svg) ](https://bintray.com/mohamed1fouad/maven/Update-Checker-for-android/_latestVersion)):
