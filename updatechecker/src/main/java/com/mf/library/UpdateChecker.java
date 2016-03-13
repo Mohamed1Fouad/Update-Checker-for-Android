@@ -9,7 +9,9 @@ import android.net.Uri;
 import android.os.StrictMode;
 import android.text.format.DateUtils;
 import android.util.Log;
+
 import org.jsoup.Jsoup;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -19,34 +21,53 @@ import java.util.GregorianCalendar;
  */
 public class UpdateChecker {
 
-    private Activity activity;
-    private String App_Store,new_version,update_btn,remind_btn;
-    private int reminder_timer=0;
-    public UpdateChecker(Activity activity){
-        this.activity=activity;
-    }
-
-    public UpdateChecker setAppPackage(String Package){
-        App_Store=Package;
-        return this;
-    }
-
-    public void start(){
-        if(!web_update() && shouldShowUpdate() )
-            showDialoge();
-        else
-            Log.i("UpdateChecker","no update found");
+    private static Activity activity;
+    private String App_Store, new_version, update_btn, remind_btn;
+    private int reminder_timer = 0;
+    private boolean force_close=false;
+    private OnCallBack onCallBack;
+    public UpdateChecker(Activity activity) {
+        this.activity = activity;
     }
 
 
+    public void checkUpdate() {
+
+        try {
+
+            if (reminder_timer < 0)
+                throw new CustomException("Number of days must be Positive Integer");
+
+            if (!web_update() && shouldShowUpdate()) {
+                if (onCallBack != null) {
+                    onCallBack.Done(true, true,new_version);
+                }
+                if(onCallBack != null && onCallBack.Done(true, true,new_version))
+                showDialoge();
+            }
+            else {
+                if (onCallBack != null) {
+                    onCallBack.Done(true, false,null);
+                }
+                Log.i("UpdateChecker", "no update found");
+            }
+        } catch (CustomException e) {
+            e.printStackTrace();
+            if (onCallBack != null) {
+                onCallBack.Done(false, false,null);
+            }
+        }
+    }
 
 
-
-    private boolean web_update(){
+    private boolean web_update() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         try {
+
+            App_Store = activity.getApplicationContext().getPackageName();
+
             String curVersion = activity.getApplication().getPackageManager().getPackageInfo(App_Store, 0).versionName;
             String newVersion = curVersion;
             newVersion = Jsoup.connect("http://play.google.com/store/apps/details?id=" + App_Store + "&hl=en")
@@ -59,43 +80,57 @@ public class UpdateChecker {
                     .ownText();
             new_version = newVersion;
 
-            System.out.println("NEW VERSION="+newVersion);
-            return curVersion.equals(newVersion) ;
+            System.out.println("NEW VERSION=" + newVersion);
+            return curVersion.equals(newVersion);
         } catch (Exception e) {
+
+            if (e.getMessage().contains("HTTP error fetching URL"))
+                e = new CustomException("This package (app) not available in store");
+
             e.printStackTrace();
+
+            if (onCallBack != null) {
+                onCallBack.Done(false, false,null);
+            }
             return true;
         }
+
     }
 
 
-    public UpdateChecker setUpdateLabel(String lable){
-        update_btn=lable;
+    public UpdateChecker setUpdateLabel(String label) {
+        update_btn = label;
         return this;
     }
 
-    public UpdateChecker setRemindLabel(String lable){
-        remind_btn=lable;
+    public UpdateChecker setRemindLabel(String label) {
+        remind_btn = label;
         return this;
     }
 
-    public UpdateChecker setRemindDays(int days){
-        reminder_timer=days;
+    public UpdateChecker setRemindDays(int days) {
+        reminder_timer = days;
         return this;
     }
 
-    public UpdateChecker resetReminder(){
-        activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date",0).commit();
-return  this;
+    public UpdateChecker setForceCloseOnSkip(boolean force_close) {
+        this.force_close = force_close;
+        return this;
+    }
+
+    public static void clearReminder() {
+        activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
+
     }
 
     //test
 
-    private void showDialoge(){
+    private void showDialoge() {
         new AlertDialog.Builder(activity)
                 .setTitle("New Update Available")
-              //  .setMessage("New Version is Available now on Google PLay Store ")
-                .setMessage("Version "+new_version +" is Available now on Google Play Store")
-                .setPositiveButton(update_btn!=null ? update_btn :"Update NOW", new DialogInterface.OnClickListener() {
+                //  .setMessage("New Version is Available now on Google PLay Store ")
+                .setMessage("Version " + new_version + " is Available now on Google Play Store")
+                .setPositiveButton(update_btn != null ? update_btn : "Update NOW", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                         try {
@@ -103,31 +138,31 @@ return  this;
                         } catch (ActivityNotFoundException anfe) {
                             activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + App_Store)));
                         }
-                        activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date",0).commit();
+                        activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
                         activity.finish();
                     }
 
                 })
-                .setNegativeButton(remind_btn!=null ? remind_btn :"Remind me later", new DialogInterface.OnClickListener() {
+                .setNegativeButton(force_close?"Exit" : (remind_btn != null ? remind_btn : "Remind me later"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
+                        if (reminder_timer != 0) {
+                            GregorianCalendar gc = new GregorianCalendar();
+                            gc.add(Calendar.DATE, (reminder_timer == 0 ? 1 : reminder_timer));
 
-                        GregorianCalendar gc = new GregorianCalendar();
-                        gc.add(Calendar.DATE, (reminder_timer==0 ? 1: reminder_timer));
-
-                        Date today = gc.getTime();
-                        activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date",today.getTime()).commit();
-                        System.out.println(new Date(today.getTime()).toString());
-
+                            Date today = gc.getTime();
+                            activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", today.getTime()).commit();
+                        } else
+                            activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
-    private boolean shouldShowUpdate(){
-        long date_in_mil= activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).getLong("saved_date",0);
-        if(date_in_mil!=0) {
+    private boolean shouldShowUpdate() {
+        long date_in_mil = activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).getLong("saved_date", 0);
+        if (date_in_mil != 0) {
             Date saved_date = new Date(date_in_mil);
 
 
@@ -136,16 +171,21 @@ return  this;
             long different = today.getTime() - saved_date.getTime();
             long daysInMilli = 1000 * 60 * 60 * 24;
             long elapsedDays = different / daysInMilli;
-            System.out.println("DIFF DAYS=="+elapsedDays);
-            if(DateUtils.isToday(date_in_mil) ||elapsedDays>=1){
+            System.out.println("DIFF DAYS==" + elapsedDays);
+            if (DateUtils.isToday(date_in_mil) || elapsedDays >= 1) {
 
                 return true;
-            }
-            else
+            } else
                 return false;
             // return today.getDay()==saved_date.getDay();
-        }
-        else
+        } else
             return true;
+    }
+
+
+    public UpdateChecker setOnCallBack(OnCallBack listener) {
+        this.onCallBack = listener;
+        return  this;
+
     }
 }
