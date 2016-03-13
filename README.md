@@ -20,7 +20,8 @@ dependencies {
 }
 ```
  
-#### Manual:
+## Manual:
+
 ### 1. Import library
 
 ### 2. Android Manifest
