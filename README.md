@@ -11,7 +11,7 @@ The project aims to provide check new update available of your application on th
 - Callback to implement your own custom logic.
 
 ## Screenshots
-![Screenshot](https://github.com/Mohamed1Fouad/Update-Checker-for-Android/blob/master/device-2016-03-13-230253.png)
+![Screenshot](https://github.com/Mohamed1Fouad/Update-Checker-for-Android/blob/master/device-2016-03-13-230931.png)
 
 
 ## Quick Setup
