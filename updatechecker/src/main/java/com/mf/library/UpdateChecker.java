@@ -24,8 +24,9 @@ public class UpdateChecker {
     private static Activity activity;
     private String App_Store, new_version, update_btn, remind_btn;
     private int reminder_timer = 0;
-    private boolean force_close=false;
+    private boolean force_close = false;
     private OnCallBack onCallBack;
+
     public UpdateChecker(Activity activity) {
         this.activity = activity;
     }
@@ -40,19 +41,18 @@ public class UpdateChecker {
 
             if (!web_update() && shouldShowUpdate()) {
 
-                if(onCallBack == null || onCallBack.Done(true, true,new_version))
-                showDialoge();
-            }
-            else {
+                if (onCallBack == null || onCallBack.Done(true, true, new_version))
+                    showDialoge();
+            } else {
                 if (onCallBack != null) {
-                    onCallBack.Done(true, false,null);
+                    onCallBack.Done(true, false, null);
                 }
                 Log.i("UpdateChecker", "no update found");
             }
         } catch (CustomException e) {
             e.printStackTrace();
             if (onCallBack != null) {
-                onCallBack.Done(false, false,null);
+                onCallBack.Done(false, false, null);
             }
         }
     }
@@ -78,17 +78,16 @@ public class UpdateChecker {
                     .ownText();
             new_version = newVersion;
 
-            System.out.println("NEW VERSION=" + newVersion);
             return curVersion.equals(newVersion);
         } catch (Exception e) {
 
             if (e.getMessage().contains("HTTP error fetching URL"))
-                e = new CustomException("This package (app) not available in store");
+                e = new CustomException("This package (app) "+App_Store +" not available in store");
 
             e.printStackTrace();
 
             if (onCallBack != null) {
-                onCallBack.Done(false, false,null);
+                onCallBack.Done(false, false, null);
             }
             return true;
         }
@@ -141,9 +140,9 @@ public class UpdateChecker {
                     }
 
                 })
-                .setNegativeButton(force_close?"Exit" : (remind_btn != null ? remind_btn : "Remind me later"), new DialogInterface.OnClickListener() {
+                .setNegativeButton(force_close ? "Exit" : (remind_btn != null ? remind_btn : "Remind me later"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if(!force_close) {
+                        if (!force_close) {
                             if (reminder_timer != 0) {
                                 GregorianCalendar gc = new GregorianCalendar();
                                 gc.add(Calendar.DATE, (reminder_timer == 0 ? 1 : reminder_timer));
@@ -152,8 +151,7 @@ public class UpdateChecker {
                                 activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", today.getTime()).commit();
                             } else
                                 activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
-                        }
-                        else{
+                        } else {
                             activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
                             activity.finish();
                         }
@@ -174,7 +172,7 @@ public class UpdateChecker {
             long different = today.getTime() - saved_date.getTime();
             long daysInMilli = 1000 * 60 * 60 * 24;
             long elapsedDays = different / daysInMilli;
-            System.out.println("DIFF DAYS==" + elapsedDays);
+
             if (DateUtils.isToday(date_in_mil) || elapsedDays >= 1) {
 
                 return true;
@@ -188,7 +186,7 @@ public class UpdateChecker {
 
     public UpdateChecker setOnCallBack(OnCallBack listener) {
         this.onCallBack = listener;
-        return  this;
+        return this;
 
     }
 }
