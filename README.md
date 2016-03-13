@@ -1,9 +1,10 @@
 # Update-Checker-for-Android
 
-The project aims to provide check new update available of  your application on the Store.
+The project aims to provide check new update available of your application on the Store so you can save your time and use this library since Google play haven't provide any API to check.
 
 ## Features
 - Show Alert Dialog and with 2 options : update now and (remind me lateror exit).
+- Detect your package automatically
 - Can create your custom buttons (change text) for update now and remind me later.
 - Can make app force close if user not update.
 - Specify number of days that library will not take effect when user choose "remind me"
@@ -11,7 +12,6 @@ The project aims to provide check new update available of  your application on t
 
 ## Quick Setup
 
-### 1. Include library
 #### Automatically ([ ![Download](https://api.bintray.com/packages/mohamed1fouad/maven/Update-Checker-for-android/images/download.svg) ](https://bintray.com/mohamed1fouad/maven/Update-Checker-for-android/_latestVersion)):
 **Automatically with Gradle**
 ``` gradle
