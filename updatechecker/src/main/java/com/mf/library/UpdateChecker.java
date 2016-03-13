@@ -42,7 +42,7 @@ public class UpdateChecker {
                 if (onCallBack != null) {
                     onCallBack.Done(true, true,new_version);
                 }
-                if(onCallBack != null && onCallBack.Done(true, true,new_version))
+                if(onCallBack == null || onCallBack.Done(true, true,new_version))
                 showDialoge();
             }
             else {
@@ -118,7 +118,7 @@ public class UpdateChecker {
         return this;
     }
 
-    public static void clearReminder() {
+    public static void clearReminder(Activity activity) {
         activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
 
     }
