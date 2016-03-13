@@ -1,4 +1,4 @@
-package com.mf.updatechecker;
+package com.mf.library;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,9 +9,7 @@ import android.net.Uri;
 import android.os.StrictMode;
 import android.text.format.DateUtils;
 import android.util.Log;
-
 import org.jsoup.Jsoup;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;

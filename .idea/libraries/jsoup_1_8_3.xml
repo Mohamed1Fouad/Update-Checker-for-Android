@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="jsoup-1.8.3">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/UpdateCheck/libs/jsoup-1.8.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/updatechecker/libs/jsoup-1.8.3.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
