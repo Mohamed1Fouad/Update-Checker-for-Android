@@ -39,9 +39,7 @@ public class UpdateChecker {
                 throw new CustomException("Number of days must be Positive Integer");
 
             if (!web_update() && shouldShowUpdate()) {
-                if (onCallBack != null) {
-                    onCallBack.Done(true, true,new_version);
-                }
+
                 if(onCallBack == null || onCallBack.Done(true, true,new_version))
                 showDialoge();
             }
@@ -145,15 +143,20 @@ public class UpdateChecker {
                 })
                 .setNegativeButton(force_close?"Exit" : (remind_btn != null ? remind_btn : "Remind me later"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        if(!force_close) {
+                            if (reminder_timer != 0) {
+                                GregorianCalendar gc = new GregorianCalendar();
+                                gc.add(Calendar.DATE, (reminder_timer == 0 ? 1 : reminder_timer));
 
-                        if (reminder_timer != 0) {
-                            GregorianCalendar gc = new GregorianCalendar();
-                            gc.add(Calendar.DATE, (reminder_timer == 0 ? 1 : reminder_timer));
-
-                            Date today = gc.getTime();
-                            activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", today.getTime()).commit();
-                        } else
+                                Date today = gc.getTime();
+                                activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", today.getTime()).commit();
+                            } else
+                                activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
+                        }
+                        else{
                             activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
+                            activity.finish();
+                        }
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
