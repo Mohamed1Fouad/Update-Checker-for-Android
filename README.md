@@ -20,7 +20,7 @@ dependencies {
 }
 ```
  
- #### Manual:
+#### Manual:
 ### 1. Import library
 
 ### 2. Android Manifest
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity  {
                     public boolean Done(boolean success, boolean isUpdateAvailable, String new_version) {
                         System.out.println("is success=" + success + " is update available=" + isUpdateAvailable + " new version is" + new_version);
 
-                        //return true will show default library dialog
+                        //return true will show default library dialog if new version available
                         return true;
                     }
                 }).checkUpdate();  //start app update checker
