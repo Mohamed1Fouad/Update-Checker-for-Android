@@ -1,10 +1,10 @@
 # Update-Checker-for-Android
 
-The project aims to provide check new update available of your application on the Store so you can save your time and use this library since Google play haven't provide any API to check.
+The project aims to provide check new update available of your application on the Store so you can save your time and use this library since Google play haven't provide any API to check. how it works ? it detect your application package and version and check if there is another version available on store or not .
 
 ## Features
 - Show Alert Dialog and with 2 options : update now and (remind me lateror exit).
-- Detect your package automatically
+- Detect your package and version automatically
 - Can create your custom buttons (change text) for update now and remind me later.
 - Can make app force close if user not update.
 - Specify number of days that library will not take effect when user choose "remind me"
