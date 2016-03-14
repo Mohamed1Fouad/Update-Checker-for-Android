@@ -119,7 +119,7 @@ public class UpdateChecker {
     }
 
     public static void clearReminder(Activity activity) {
-        sharedPreferences.edit().putLong("saved_date", 0).commit();
+        activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
 
     }
 
