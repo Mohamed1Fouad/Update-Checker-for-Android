@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.text.format.DateUtils;
@@ -26,9 +27,11 @@ public class UpdateChecker {
     private int reminder_timer = 0;
     private boolean force_close = false;
     private OnCallBack onCallBack;
+    private static SharedPreferences sharedPreferences;
 
     public UpdateChecker(Activity activity) {
         this.activity = activity;
+        sharedPreferences = this.activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE);
     }
 
 
@@ -42,7 +45,7 @@ public class UpdateChecker {
             if (!web_update() && shouldShowUpdate()) {
 
                 if (onCallBack == null || onCallBack.Done(true, true, new_version))
-                    showDialoge();
+                    showDialog();
             } else {
                 if (onCallBack != null) {
                     onCallBack.Done(true, false, null);
@@ -116,13 +119,13 @@ public class UpdateChecker {
     }
 
     public static void clearReminder(Activity activity) {
-        activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
+        sharedPreferences.edit().putLong("saved_date", 0).commit();
 
     }
 
     //test
 
-    private void showDialoge() {
+    private void showDialog() {
         new AlertDialog.Builder(activity)
                 .setTitle("New Update Available")
                 //  .setMessage("New Version is Available now on Google PLay Store ")
@@ -135,7 +138,7 @@ public class UpdateChecker {
                         } catch (ActivityNotFoundException anfe) {
                             activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + App_Store)));
                         }
-                        activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
+                        sharedPreferences.edit().putLong("saved_date", 0).commit();
                         activity.finish();
                     }
 
@@ -148,11 +151,11 @@ public class UpdateChecker {
                                 gc.add(Calendar.DATE, (reminder_timer == 0 ? 1 : reminder_timer));
 
                                 Date today = gc.getTime();
-                                activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", today.getTime()).commit();
+                                sharedPreferences.edit().putLong("saved_date", today.getTime()).commit();
                             } else
-                                activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
+                                sharedPreferences.edit().putLong("saved_date", 0).commit();
                         } else {
-                            activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).edit().putLong("saved_date", 0).commit();
+                            sharedPreferences.edit().putLong("saved_date", 0).commit();
                             activity.finish();
                         }
                     }
@@ -162,7 +165,7 @@ public class UpdateChecker {
     }
 
     private boolean shouldShowUpdate() {
-        long date_in_mil = activity.getApplicationContext().getSharedPreferences("updateChk", Activity.MODE_PRIVATE).getLong("saved_date", 0);
+        long date_in_mil = sharedPreferences.getLong("saved_date", 0);
         if (date_in_mil != 0) {
             Date saved_date = new Date(date_in_mil);
 
