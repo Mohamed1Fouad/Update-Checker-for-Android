@@ -20,7 +20,7 @@ The project aims to provide check new update available of your application on th
 **Automatically with Gradle**
 ``` gradle
 dependencies {
-    compile 'com.m1f:updatechecker:1.0.6'
+    compile 'com.m1f:updatechecker:1.1'
 }
 ```
  
