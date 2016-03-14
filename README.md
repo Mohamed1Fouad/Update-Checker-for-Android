@@ -20,7 +20,7 @@ The project aims to provide check new update available of your application on th
 **Automatically with Gradle**
 ``` gradle
 dependencies {
-    compile 'com.m1f:updatechecker:1.1'
+    compile 'com.m1f:updatechecker:1.1.2'
 }
 ```
  
@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity  {
                     public boolean Done(boolean success, boolean isUpdateAvailable, String new_version) {
                         System.out.println("is success=" + success + " is update available=" + isUpdateAvailable + " new version is" + new_version);
 
-                        //return true will show default library dialog if new version available
+                        //return true will show default library dialog if new version available 
+                        // and false will hide the dialog 
+                        
                         return true;
                     }
                 }).checkUpdate();  //start app update checker
