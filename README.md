@@ -4,14 +4,18 @@ The project aims to provide check new update available of your application on th
 
 ## Features
 - Show Alert Dialog and with 2 options : update now and (remind me lateror exit).
+- Show new update content (Read it from "WHAT'S NEW" on store)
 - Detect your package and version automatically
 - Can create your custom buttons (change text) for update now and remind me later.
 - Can make app force close if user not update.
 - Specify number of days that library will not take effect when user choose "remind me"
 - Callback to implement your own custom logic.
 
+## Changelog
+- v1.1.3 Show new update content in Alert Dialog
+ 
 ## Screenshots
-![Screenshot](https://github.com/Mohamed1Fouad/Update-Checker-for-Android/blob/master/device-2016-03-13-230931.png)
+![Screenshot](https://github.com/Mohamed1Fouad/Update-Checker-for-Android/blob/master/Unknown-6.png)
 
 
 ## Quick Setup
@@ -20,7 +24,7 @@ The project aims to provide check new update available of your application on th
 **Automatically with Gradle**
 ``` gradle
 dependencies {
-    compile 'com.m1f:updatechecker:1.1.2'
+    compile 'com.m1f:updatechecker:1.1.3'
 }
 ```
  
@@ -71,19 +75,28 @@ public class MainActivity extends AppCompatActivity  {
 }
 ```
 
-## License
+### License
 
+```
+The MIT License (MIT)
 
-    Copyright 2016 Mohamed Fouad
+ Copyright (c) 2016 Mohamed Fouad
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-       http://www.apache.org/licenses/LICENSE-2.0
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ ```
