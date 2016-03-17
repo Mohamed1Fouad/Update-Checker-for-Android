@@ -4,12 +4,16 @@ The project aims to provide check new update available of your application on th
 
 ## Features
 - Show Alert Dialog and with 2 options : update now and (remind me lateror exit).
+- Show new update content (Read it from "WHAT'S NEW" on store)
 - Detect your package and version automatically
 - Can create your custom buttons (change text) for update now and remind me later.
 - Can make app force close if user not update.
 - Specify number of days that library will not take effect when user choose "remind me"
 - Callback to implement your own custom logic.
 
+## Changelog
+- v1.1.3 Show new update content in Alert Dialog
+ 
 ## Screenshots
 ![Screenshot](https://github.com/Mohamed1Fouad/Update-Checker-for-Android/blob/master/Unknown-6.png)
 
@@ -20,7 +24,7 @@ The project aims to provide check new update available of your application on th
 **Automatically with Gradle**
 ``` gradle
 dependencies {
-    compile 'com.m1f:updatechecker:1.1.2'
+    compile 'com.m1f:updatechecker:1.1.3'
 }
 ```
  
