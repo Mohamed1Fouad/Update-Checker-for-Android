@@ -1,5 +1,6 @@
 package com.mf.library;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -12,6 +13,8 @@ import android.text.format.DateUtils;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -23,7 +26,7 @@ import java.util.GregorianCalendar;
 public class UpdateChecker {
 
     private static Activity activity;
-    private String App_Store, new_version, update_btn, remind_btn;
+    private String App_Store, new_version, update_btn, remind_btn, whatsnew="";
     private int reminder_timer = 0;
     private boolean force_close = false;
     private OnCallBack onCallBack;
@@ -68,20 +71,25 @@ public class UpdateChecker {
         try {
 
             App_Store = activity.getApplicationContext().getPackageName();
-
             String curVersion = activity.getApplication().getPackageManager().getPackageInfo(App_Store, 0).versionName;
-            String newVersion = curVersion;
-            newVersion = Jsoup.connect("http://play.google.com/store/apps/details?id=" + App_Store + "&hl=en")
+            new_version = curVersion;
+            Document document = Jsoup.connect("http://play.google.com/store/apps/details?id=" +App_Store + "&hl=en")
                     .timeout(30000)
                     .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                     .referrer("http://www.google.com")
-                    .get()
-                    .select("div[itemprop=softwareVersion]")
-                    .first()
-                    .ownText();
-            new_version = newVersion;
+                    .get();
+            new_version = document.select("div[itemprop=softwareVersion]").first().ownText();
 
-            return curVersion.equals(newVersion);
+
+            Elements recent_changes = document.select("div.recent-change");
+
+            for(int i=0;i<recent_changes.size();i++) {
+
+                whatsnew +=recent_changes.get(i).ownText() + "\n";
+            }
+
+
+             return curVersion.equals(new_version);
         } catch (Exception e) {
 
             if (e.getMessage().contains("HTTP error fetching URL"))
@@ -129,7 +137,7 @@ public class UpdateChecker {
         new AlertDialog.Builder(activity)
                 .setTitle("New Update Available")
                 //  .setMessage("New Version is Available now on Google PLay Store ")
-                .setMessage("Version " + new_version + " is Available now on Google Play Store")
+                .setMessage("Version " + new_version + "\n \n"+"New Features: \n"+whatsnew)
                 .setPositiveButton(update_btn != null ? update_btn : "Update NOW", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
